@@ -1,0 +1,140 @@
+<h2>Introduction</h2>
+<p>
+    I was inspired by the <a href="https://www.youtube.com/watch?v=n_6p-1J551Y">Cubli</a>,
+    a system of three reaction wheels that balance a cube on an edge or vertex. I wanted
+    to create something similar (but simpler) for my MIT freshman seminar independent project.
+</p>
+
+<p>
+    To make the project more feasible, I decided to only balance on a single axis
+    (the edge of a cube). I also didn't attempt to replicate the Cubli's ability
+    to jump up from resting flat to balancing (it would require brakes and much
+    more advanced control algorithms).
+</p>
+
+<h2>Construction</h2>
+<p>
+    The frame of the cube was constructed as a sandwich of laser cut acrylic
+    and standoffs:
+</p>
+
+<img src="/img/cube_pic1.jpg">
+
+<p>
+    The flywheel was machined from a disc of aluminum and mounted to a 6mm shaft collar:
+</p>
+
+<img src="/img/cube_pic2.jpg" width="50%">
+
+After adding the motor, battery, speed controller, teensy, and IMU the cube looked
+like this:
+
+<img src="/img/cube_pic3.jpg">
+
+<h2>First Attempt + Problems</h2>
+
+<p>
+    As I started writing the Arduino code, I was pretty optimistic. A simple PID
+    loop should be all that's needed, right? If it's falling down a certain direction,
+    starting spinning the flywheel in that same direction – producing a torque on
+    the cube that counters its falling...
+</p>
+<p>
+    Unsurprisingly, it wasn't that easy. After tinkering with the control loop for a
+    couple of hours it became apparent that my cube was insufficient mechanically.
+    I was using a pretty cheap brushed DC motor with a gearbox from Pololu. While it was
+    capable of producing a decent amount of "kick" to counteract the falling of the cube,
+    it wasn't good at making small and quick speed reversals, which seems to be
+    important for maintaining balance.
+</p>
+<p>
+    I suspect a big contributor to this problem is the backlash in the gearbox.
+    <a href="https://en.wikipedia.org/wiki/Backlash_(engineering)">Backlash</a>
+    is the amount of space between meshing gear teeth. When reversing direction, this
+    space causes the teeth to slam together, delivering an undesired spike in torque
+    (while we want very fine control of torque).
+</p>
+
+<iframe src="https://player.vimeo.com/video/248665312" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+<p>
+    All this abrupt reversing was definitely not healthy – it was making the set
+    screw on the shaft come loose as well as probably shredding the gearbox
+    (and possibly damaging the speed controller).
+</p>
+
+<h2>More Motors</h2>
+
+<p>
+    I ended up trying a couple different brushed DC motors with nice
+    <a href="https://en.wikipedia.org/wiki/Epicyclic_gearing">planetary</a> gearboxes
+    (my first motor had a spur gearbox),
+    in hopes that they would have less backlash. It turned out planetary gearboxes
+    didn't offer a significant improvement in backlash, but at least they provided
+    a similar (or more) amount of torque in a smaller package.
+</p>
+
+<iframe src="https://player.vimeo.com/video/248666937" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+<p>
+    These new motors were perhaps slightly better than before, but still the underlying
+    problem remained the same. It was time to move on from brushed motors.
+</p>
+
+<h2>Brushless Motors</h2>
+
+<p>
+    I originally stayed away from brushless motors since I knew hobbyist brushless motors
+    and speed controllers aren't good for running at slow speeds and reversing frequently.
+    Instead, they're just meant to be run at pretty high speeds – like on a quadcopter.
+    The slow speeds that the Cubli's reaction wheels can run at are thanks to
+    <a href="https://www.maxonmotor.com/maxon/view/product/397172">brushless motors with sensors built in</a>
+    and
+    <a href="https://www.maxonmotorusa.com/maxon/view/product/control/Positionierung/347717">better speed controllers ($$$)</a>.
+</p>
+
+<p>
+    One thing to note is that the torque comes from (angular) acceleration, not velocity.
+    So it doesn't matter if the flywheel is always spinning one
+    direction or the other - it's the change in rotation speed that counts. I swapped out
+    the brushed motor with one of the lowest speed (to get more torque) brushless motors I could find and tried
+    this strategy.
+</p>
+<p>
+    It quickly became obvious that a single brushless motor wouldn't work. The issue
+    is that cheap speed controllers I bought are much better at accelerating than decelerating
+    (it might just be using friction to slow down). It's possible to enable a braking
+    option on the ESCs, but that seems to be too abrupt for my purposes.
+</p>
+
+<h2>Two Flywheels</h2>
+
+<p>
+    The solution to the problem of having asymmetrical torque available was pretty
+    simple: just add another flywheel spinning the other direction.
+</p>
+
+<img src="/img/cube_2flywheels.jpg">
+
+<div class="caption">
+    The clear and black disks are the two flywheels
+</div>
+
+<p>
+    Right from the start, this worked way better than any previous attempts. With
+    minimal changes to my existing code, I could get it to balance for a couple
+    of seconds:
+</p>
+
+<iframe src="https://player.vimeo.com/video/248805304" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+<p>
+    This was a much needed confidence boost at 5AM the day before I was going
+    to display the project to the rest of the seminar group.
+</p>
+<p>
+    As of now, the cube is only able to stay up for around 10 seconds. An adjustment
+    that I've yet to make but could help enormously is increasing the mass of the
+    flywheels. Increasing the mass (technically I should be saying <i>moment of inertia</i>)
+    would help because then less acceleration is needed to get the same torque.
+</p>

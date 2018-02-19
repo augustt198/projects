@@ -1,0 +1,147 @@
+html, body {
+    font-family: Inconsolata, monospace;
+    margin: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.tag {
+    background-color: #ddd;
+    padding: 2px 5px;
+    border-radius: 2px;
+}
+
+hr {
+    height: 1px;
+    background-color: #888;
+    border: none;
+}
+
+h2 {
+    font-weight: 500;
+}
+
+.projects-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.project {
+    position: relative;
+    width: 40%;
+    height: 300px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 10px;
+    background-size: cover;
+}
+
+.project .project-header {
+    margin: 0 0 15px 0;
+}
+
+.project h2, .project p {
+    display: inline;
+    color: black;
+    background-color: white;
+    padding: 2px 5px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    line-height: 1.5em;
+    /*padding-inline-end: 4px;*/
+}
+
+a.project {
+    text-decoration: none;
+    color: black;
+}
+
+.project .tags {
+    position:absolute;
+    bottom: 20px;
+}
+
+.writing p {
+    text-indent: 2em;
+    line-height: 1.3em;
+}
+
+.writing h2 {
+    text-decoration: underline;
+}
+
+.writing img {
+    max-width: 80%;
+    display: block;
+    margin: 20px auto;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 10px;
+    border-radius: 3px;
+}
+
+.writing iframe {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+.footer {
+    border-top: 1px solid #555;
+    padding: 20px;
+    margin: 60px 0;
+    text-align: center;
+}
+
+.header {
+    background-color: #2d2d2d;
+    color: white;
+    padding: 10px 0 30px 0;
+    box-shadow: darkgrey 0 0 23px;
+    margin-bottom: 30px;
+}
+
+.header a {
+    color: white;
+}
+
+.header .desc {
+    max-width: 400px;
+}
+
+.header .tag {
+    color: black;
+}
+
+.tags {
+    float: right;
+}
+
+.caption {
+    text-align: center;
+    font-size: 0.8em;
+    margin-top: -10px;
+}
+
+.highlight {
+    font-weight: 700;
+    background-color: #eee;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.noshadow {
+    box-shadow: none !important;
+}
+
+pre {
+    overflow: scroll;
+}
+
+pre.code {
+    background-color: #eee;
+    padding: 5px 10px;
+}

@@ -1,0 +1,65 @@
+<p>
+    To get some practice with OpenGL, I made a Constructive Solid Geometry (CSG)
+    editor. The idea is that you can model solids using a combination of primitives
+    (spheres, cubes, etc.) and operations that act on two solids: union, intersection,
+    difference. CSG is nice because it's very simple to represent the formed solids
+    internally - just a binary tree. The more difficult part is rendering the resulting solid.
+</p>
+
+<img class="noshadow" width="400px" src="https://upload.wikimedia.org/wikipedia/commons/8/8b/Csg_tree.png">
+
+<div class="caption">
+    A binary tree of CSG operations. <a href="https://commons.wikimedia.org/wiki/File:Csg_tree.png">Credit</a>.
+</div>
+
+<p>
+    I used the technique of rendering implicit surfaces from scalar fields. What
+    this means is you take a scalar field (a function that assigns a number to each point
+    in 3D space) and find the surface formed by places where the function is zero
+    (or some constant). For instance, the surface of a sphere radius <span class="highlight">R</span>
+    is formed by points where the function
+    <span class="highlight">f(x, y, z) = x<sup>2</sup> + y<sup>2</sup> + z<sup>2</sup> - R<sup>2</sup></span>
+    is equal to zero.
+</p>
+<p>
+    We can define points inside the solid to be points where the function is negative,
+    and outside the solid to be where the function is positive. Then an operation like
+    the union of two solids, represented by functions <span class="highlight">f<sub>1</sub></span>
+    and <span class="highlight">f<sub>2</sub></span>, would be formed by taking
+    the minumum of these two functions:
+    <span class="highlight">min(f<sub>1</sub>(x, y, z), f<sub>2</sub>(x, y, z))</span>.
+</p>
+<p>
+    To create a mesh of an implicit surface, I used the
+    <a href="https://en.wikipedia.org/wiki/Marching_cubes">marching cubes algorithm</a>.
+    The main idea is that you sample the function you're finding the implicit surface of
+    at the vertices of a cube. If the sign of the function at each of the vertices
+    is the same, the surface (points where the function is zero) probably doesn't pass
+    through that cube in space. If there are different signs, then you use a lookup table
+    to handle each case of different signs (2<sup>8</sup> = 256 in total) and add triangles
+    to the mesh accordingly. For instance, if the top four vertices were positive and the
+    bottom four negative, the surface passing through the cube would look like a horizontal
+    plane.
+</p>
+
+<img class="noshadow" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/MarchingCubes.svg">
+<div class="caption">
+    A couple cases of surfaces through a cube.
+    <a href="https://commons.wikimedia.org/wiki/File:MarchingCubes.svg">Credit</a>.
+</div>
+
+<p>
+    For the GUI, I used the amazing <a href="https://github.com/ocornut/imgui">ImGui library</a>:
+</p>
+
+<img class="noshadow" src="/img/csg.png">
+
+<p>
+    One issue I had was that the edges of the solids were very 'rough'. I could
+    compensate for this by changing the min and max functions in my code with
+    smoothed min/max functions. This is what an unsmoothed surface would look like
+    (for some reason changing the marching cubes grid resolution did nothing to fix
+    this):
+</p>
+
+<img class="noshadow" src="/img/csg2.png">

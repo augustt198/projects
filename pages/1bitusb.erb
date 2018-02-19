@@ -1,0 +1,162 @@
+<p>
+    I saw
+    <a href="https://www.reddit.com/r/electronics/comments/6b3tcz/i_made_a_usb_1bit_storage_device/">this /r/electronics post</a>
+    and wanted to step it up a bit... 
+</p>
+
+<img src="/img/1bitusb/topview.jpg">
+
+<p>
+    It's a one-bit USB storage drive. Plug it into your computer like any other USB drive...
+    except it only stores a single bit: 0 or 1.
+</p>
+
+<h2>Board Design</h2>
+
+I used Altium to layout the PCB:
+
+<div style="margin: 20px auto; max-width: 80%">
+<img src="/img/1bitusb/pcb1.png" style="display: inline">
+<img src="/img/1bitusb/pcb2.png" style="display: inline">
+
+<div class="caption">
+    top side / back side
+</div>
+</div>
+
+<p>
+The microcontroller used is a ATmega32u2, which I chose for its USB connectivity
+and low pin count. The other components are an external 16MHz crystal, some
+resistors and caps, and testpoints for the programming pins.
+</p>
+
+<img src="/img/1bitusb/botview.jpg">
+
+<p>
+I wanted most of the top side to be free of vias and traces, so I took extra care to
+route almost everything on the bottom. I got 10 of these boards for $12 (including
+shipping) from PCBWay and populated it with components from Mouser. This was my first
+time soldering a QFN component, but I got it eventually.
+</p>
+
+<h2>Writing Firmware</h2>
+
+<p>
+The behavior I wanted from the USB stick was pretty simple: when you plug it in,
+it should appear like a normal storage device does. Inside would be a single
+text file, containing either a 0 or a 1 depending on the toggle.
+</p>
+
+<p>
+I know very little about filesystems and how the USB stack works, which are the two main
+things involved in the firmware. Initially, I thought USB storage
+devices worked through some sort API where the computer would ask "list files in
+this directory", "fetch this file", etc. Instead, it seems that it works by
+just exposing some memory through an interface called
+<a href="https://en.wikipedia.org/wiki/SCSI">SCSI</a>. So I realized I would need 
+need to generate a small disk image containing my single text file and save it
+in the microcontroller.
+</p>
+<p>
+To generate the disk image, I found a <a href="https://github.com/NodeOS/genfatfs">tool for creating FAT filesystems</a>.
+Using it was very simple, but I did need to edit the code to change the volume name from "NO NAME"
+to "1 BIT USB". The smallest it would let me make the image was 67kB (65 blocks x 1024 bytes), which
+is way too big to fit on the microcontroller (32K program memory, 1K ram). Fortunately the image is almost all
+zeros, as seen by the hexdump:
+</p>
+
+<pre class="code">
+00000000  eb fe 90 4d 53 44 4f 53  35 2e 30 00 02 01 01 00  |...MSDOS5.0.....|
+00000010  01 00 02 82 00 f0 01 00  3f 00 ff 00 00 00 00 00  |........?.......|
+00000020  00 00 00 00 80 00 29 00  00 00 00 31 20 42 49 54  |......)....1 BIT|
+00000030  20 55 53 42 20 20 46 41  54 31 32 20 20 20 00 00  | USB  FAT12   ..|
+00000040  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+000001f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 55 aa  |..............U.|
+00000200  f0 ff ff ff 0f 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000210  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00000400  44 41 54 41 20 20 20 20  54 58 54 20 18 00 00 00  |DATA    TXT ....|
+00000410  00 00 00 00 00 00 00 00  00 00 02 00 02 00 00 00  |................|
+00000420  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00004400  31 0a 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |1...............|
+00004410  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+000045b0  3a 9a c1 e3 ff 7f 00 00  64 c0 00 00 00 00 00 00  |:.......d.......|
+000045c0  2e 00 00 00 00 00 00 00  45 20 00 fd 9f 7f 00 00  |........E ......|
+000045d0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000045e0  60 29 c0 fc 9f 7f 00 00  48 19 19 51 ff 7f 00 00  |`)......H..Q....|
+000045f0  45 20 00 fd 9f 7f 00 00  f0 19 19 51 ff 7f 00 00  |E .........Q....|
+00004600  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00010400
+</pre>
+
+<p>
+So really all I needed to store were the non-zero parts, which could even fit in the 1K ram.
+</p>
+
+<p>
+I used a framework called <a href="http://www.fourwalledcubicle.com/LUFA.php">LUFA</a>
+to implement the storage device. Because of my limited experience, I decided to
+modify the existing
+<a href="https://github.com/abcminiuser/lufa/tree/master/Demos/Device/ClassDriver/MassStorage">Mass Storage Device demo</a>.
+This demo was written to interact with an external memory chip (as a real USB storage device should), so
+I needed replace calls to read from external memory with a function that read from my own fake filesystem,
+stored inside the ATmega.
+</p>
+<p>
+The code to do this was pretty simple. I just needed a few arrays, one for each chunk
+of non-zero memory. This looked like this:
+</p>
+
+<pre class="code">
+char data_addr_0_63[64] = {0xEB, 0xFE, 0x90, ...};
+
+char data_addr_480_543[64] = {0x00, 0x00, ..., 0x55, 0xAA, ...};
+
+char data_addr_1024_1055[32] = {0x44, 0x41, 0x54, ...};
+
+char data_addr_17408_17439[32] = {0x31, 0x0A, 0x00, ...}
+
+char data_addr_17824_17919[96] = {0x00, 0x00, ... 0x3A, 0x9A, ...};
+</pre>
+
+<p>
+Then I had a function to return the proper byte for a given address. This
+is done by finding which chunk of non-zero data the address belongs to,
+or returning zero if it's outside one of these chunks. If the read address
+is exactly the address where the zero/one should be, then a '0' or '1' is
+returned depending on the state of the microcontroller pin that's linked
+to the switch:
+</p>
+
+<pre class="code">
+char getbyte(uint32_t idx) {
+    if (idx == 17408) {
+        if (PIND & 1) {
+            // if the switch is flipped, return '1'
+            return 0x31;
+        } else {
+            // otherwise return '0'
+            return 0x30;
+        }
+    }
+
+    if (idx >= 0 && idx <= 63) {
+        return data_addr_0_63[idx - 0];
+    } else if (idx >= 480 && idx <= 543) {
+        return data_addr_480_543[idx - 480];
+    } else if (idx >= 1024 && idx <= 1055) {
+        return data_addr_1024_1055[idx - 1024];
+    } else if (idx >= 17408 && idx <= 17439) {
+        return data_addr_17408_17439[idx - 17408];
+    } else if (idx >= 17824 && idx <= 17919) {
+        return data_addr_17824_17919[idx - 17824];
+    } else {
+        return 0; // zero everywhere else
+    }
+}
+</pre>
+

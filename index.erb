@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>August Trollbäck's Projects</title>
+    <meta charset="utf-8">
+    <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Projects</h1>
+        <p>
+            This is a collection of projects I've worked on.
+            Click for more information.
+        </p>
+
+        <hr>
+
+        <div class="projects-list">
+            <% DATA[:projects].each do |proj| %>
+                <a class="project" href="projects/<%= proj[:page] %>.html" style="background-image: url('<%= proj[:img] %>')">
+                    <div class="project-header">
+                        <h2><%= proj[:title] %>
+                    </div>
+
+                    <% if proj[:tags] %>
+                        <div class="tags">
+                        <% proj[:tags].each do |tag| %>
+                            <span class="tag"><%= tag %></span>
+                        <% end %>
+                    </div>
+                    <% end %>
+                </a>
+            <% end %>
+        </div>
+    </div>
+</body>
+</html>

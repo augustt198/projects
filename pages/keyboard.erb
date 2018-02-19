@@ -1,0 +1,65 @@
+I wanted to learn about PCB design and make something useful, so a keyboard
+seemed like a good choice. I used KiCad to create the schematics and PCB layout.
+
+<h2>Schematic</h2>
+
+<p>The first step was to create the schematic</p>
+
+<img src="/img/kb_schematic.png">
+
+<p>
+    I used an ATmega32u4 as the 'brains' of the keyboard. The ATmega32u4 is pretty popular
+    among keyboard hobbyists and had a good amount of IO pins. The 2x3 connector
+    on the lower right is an SPI header for programming chip (I learned later that
+    you can flash programs over USB).
+</p>
+<p>
+    Most of the IO pins are connected to a 'sub-schematic' containing the keyboard
+    matrix. Because the amount of keys (64) is larger than the number of IO pins
+    available, each key can't have it's own IO pin to detect pressed/not pressed.
+    This is overcome by multiplexing, a configuration where each row and column share
+    a common wire:
+</p>
+
+<img src="/img/kb_matrix.png">
+
+<h2>PCB Layout</h2>
+
+<p>
+    To keep things simple, I wanted as many components as possible to be through-hole
+    (my fear of SMD has since been cured).
+</p>
+
+<img src="/img/kb_pcb.png">
+
+<p>
+    I ended up routing many of the traces underneath the spacebar, since the rest of
+    the board is riddled with holes. One downside of this were the very long traces needed
+    to reach the USB connector in the upper left (signal traces should be kept sort).
+</p>
+
+<h2>Fabrication + Part Sourcing</h2>
+
+<p>
+    I got my PCBs fabricated from PCBWay, a Chinese service. For the area
+    of my board, it was far cheaper than something like OSH Park. The cheap cost
+    definitely came with some quality issues: chipped solder mask in some
+    areas and flecks of dust under the solder mask. Still good enough for my purposes.
+</p>
+<p>
+    I got the electrical components (microcontrollers, diodes, resistors, etc.) from Digi-Key.
+    Finding a cheap source for the switches was a bit harder. After some research,
+    the cheapest solution I found was to buy switches from the
+    <a href="https://www.reddit.com/r/mechmarket/">/r/mechmarket</a> subreddit.
+    The switches are sometimes desoldered from old keyboards, but that's not too
+    much of a problem.
+</p>
+<p>
+    I bought
+    <a href="https://kbdfans.myshopify.com/collections/keycaps/products/blank-dsa-keycaps-for-tada68-gh60-poker-mx-mechanical-keyboard-pbt-caps-fc660-keycap">blank DSA keycaps</a>
+    - their shape is symmetric and the same on every row. This was important because
+    since some of my keys had unusual sizes (e.g. my shift key was 2u wide, not 2.25 like usual),
+    I would need to borrow keys from other rows.
+</p>
+
+<img src="/img/keeb.png">
