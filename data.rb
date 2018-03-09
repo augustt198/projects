@@ -46,5 +46,12 @@ DATA[:projects] = [
         img: "img/fractal.png",
         tags: ["Three.js", "JavaScript", "Hackathon"],
         page: "fractal"
+    },
+    {
+        title: "3D Grapher",
+        desc: "Fall 2016",
+        img: "img/grapher.png",
+        tags: ["React", "JavaScript"],
+        page: "grapher"
     }
 ]
