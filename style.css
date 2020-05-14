@@ -127,6 +127,15 @@ a.project {
     margin-top: -10px;
 }
 
+.githash {
+    margin-top: 5px;
+    font-size: 0.8em;
+}
+
+.githash a {
+    color: #8796e2;
+}
+
 .highlight {
     font-weight: 700;
     background-color: #eee;

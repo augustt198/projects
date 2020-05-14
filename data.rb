@@ -1,9 +1,34 @@
 DATA = {}
 DATA[:projects] = [
     {
+        title: "Relativity Sandbox",
+        page: "820",
+        img: "img/820-thumb.png",
+        tags: ["JavaScript"],
+        gh_link: "augustt198/8.20-project"
+    },
+    {
+        title: "MIT Motorsports",
+        page: "fsae",
+        img: "img/fsae/thumb.jpg",
+        tags: ["PCB design", "embedded"],
+    },
+    {
+        title: "MIT 6.111",
+        page: "6111",
+        img: "img/6111/setup-small.jpg",
+        tags: ["FPGA", "hardware"],
+    },
+#    {
+#        title: "MakeMIT 2018",
+#        page: "makemit18",
+#        img: "img/makemit18/thumbnail.jpg",
+#        tags: ["Hackathon"]
+#    },
+    {
         title: "Balancing Cube",
         img: "img/balancingcube.png",
-        tags: ["control", "dynamics", "electrical"],
+        tags: ["control", "electrical"],
         page: "cube"
     },
     {
@@ -24,7 +49,8 @@ DATA[:projects] = [
         desc: "Summer 2017",
         img: "img/cloth.png",
         tags: ["OpenGL", "C++"],
-        page: "cloth"
+        page: "cloth",
+        gh_link: "augustt198/cloth"
     },
     {
         title: "CSG Editor",
@@ -36,7 +62,7 @@ DATA[:projects] = [
     {
         title: "Mechanical Keyboard",
         desc: "Spring 2017",
-        img: "img/keeb.png",
+        img: "img/keeb-thumb.jpg",
         tags: ["PCB Design", "embedded"],
         page: "keyboard"
     },

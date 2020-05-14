@@ -19,3 +19,41 @@
 <div class="caption">
     The display as it came. Maybe it was the beginning of "NOT IN SERVICE"?
 </div>
+
+<h2>Update: Spring 2020</h2>
+<p>
+    Okay, progress has been a bit slow. It's three years later and I've started a second pass at
+    making a driver for the display. The main holdup has been trying to find a nice way to put
+    16+28=44 half bridges on a board. I'd prefer not to use discrete fets for everything, so I've been
+    looking for half-bridge array ICs. I was optimistic when I found the newly released TLE94112,
+    an Infineon IC with 12 half-bridge outputs.
+</p>
+<p>
+    The TLE94112 test board I bought failed to flip any dots:
+    the ~2A current required to flip was too much for the IC. The IC can do almost 1A before
+    overcurrent protection kicks in, but I was hoping we could stretch that a bit. Turns out
+    the overcurrent protection is *really* fast and shuts down the output in just microseconds 
+    &mdash; definitely not long enough to flip a dot.
+</p>
+<p>
+    I went back to the Digi-Key search grind and this time found the <strike>Atmel</strike> Microchip
+    ATA6838C, which has 6 half-bridge outputs. The status of these chips is pretty confusing,
+    though. It seems to be a revision of the ATA6838, which has been obsoleted completely. On the
+    <a href="https://www.microchip.com/wwwproducts/en/ATA6838C">ATA6838C product page</a>
+    the status is listed as "In Production", but on Digi-Key/Mouser almost all ATA6838C parts are
+    obsolete or non-stocked. Even more confusing, the one Digi-Key part that is in stock is selling
+    for $0.56 for qty &lt; 25. The Microchip page however shows a price of $2.13 for qty &lt; 25.
+    Anyway, I bought a bunch because they were so cheap.
+</p>
+<p>
+    As for the actual specs of the ATA6838C, it can also do ~1A before an overcurrent timer stops.
+    This is just the minimum guarantee, the datasheets says the overcurrent limit can actually be
+    up to 2.1A, so I'm hopeful it could briefly do the ~2A required to flip a dot. Most importantly,
+    the overcurrent timer can be configured to either shutdown in 0.45ms or 4.8ms minimum (2.1ms or
+    15ms maximum). I made a tiny breakout board for the IC but I haven't gotten a chance to test
+    it on the display yet.
+</p>
+<img src="/img/ata6838c.png">
+<div class="caption">
+    ATA6838C on OSHPark breakout board.
+</div>

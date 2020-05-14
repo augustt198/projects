@@ -6,9 +6,10 @@ home_template = File.read('index.erb')
 result = ERB.new(home_template).result(binding)
 File.write('index.html', result)
 
+LAST_COMMIT_SHA = (`git rev-parse --short HEAD`).strip
+COMMIT_URL = "https://github.com/augustt198/projects/commit/#{LAST_COMMIT_SHA}"
 
 def render_layout(project)
-    thing2 = 'bleg'
     layout_template = File.read('layout.erb')
     ERB.new(layout_template).result(binding)
 end
@@ -23,8 +24,6 @@ DATA[:projects].each do |project|
     next if !page
 
     page_template = File.read('pages/' + page + '.erb')
-
-    thing = 'blah'
 
     res = render_layout(project) do
         ERB.new(page_template).result(binding)

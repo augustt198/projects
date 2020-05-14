@@ -17,7 +17,7 @@ seemed like a good choice. I used KiCad to create the schematics and PCB layout.
     Most of the IO pins are connected to a 'sub-schematic' containing the keyboard
     matrix. Because the amount of keys (64) is larger than the number of IO pins
     available, each key can't have it's own IO pin to detect pressed/not pressed.
-    This is overcome by multiplexing, a configuration where each row and column share
+    So the keys are multiplexed, a configuration where each row and column share
     a common wire:
 </p>
 
@@ -34,25 +34,26 @@ seemed like a good choice. I used KiCad to create the schematics and PCB layout.
 
 <p>
     I ended up routing many of the traces underneath the spacebar, since the rest of
-    the board is riddled with holes. One downside of this were the very long traces needed
-    to reach the USB connector in the upper left (signal traces should be kept sort).
+    the board is riddled with holes. One downside of this were the very long signal traces needed
+    to reach the USB connector in the upper left.
 </p>
 
 <h2>Fabrication + Part Sourcing</h2>
 
 <p>
     I got my PCBs fabricated from PCBWay, a Chinese service. For the area
-    of my board, it was far cheaper than something like OSH Park. The cheap cost
-    definitely came with some quality issues: chipped solder mask in some
-    areas and flecks of dust under the solder mask. Still good enough for my purposes.
+    of my board, it was far cheaper than something like OSH Park. PCBWay has
+    some small quality issues like chipped solder mask in some
+    areas and flecks of dust under the solder mask but it's good considering
+    the price.
 </p>
 <p>
     I got the electrical components (microcontrollers, diodes, resistors, etc.) from Digi-Key.
     Finding a cheap source for the switches was a bit harder. After some research,
     the cheapest solution I found was to buy switches from the
     <a href="https://www.reddit.com/r/mechmarket/">/r/mechmarket</a> subreddit.
-    The switches are sometimes desoldered from old keyboards, but that's not too
-    much of a problem.
+    The switches are sometimes desoldered from old keyboards, but I didn't see
+    any quality problems.
 </p>
 <p>
     I bought

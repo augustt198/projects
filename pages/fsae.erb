@@ -1,0 +1,45 @@
+Stuff I've worked on for MIT's electric racecar team.
+
+<h2>HV Battery Management System</h2>
+
+I made the the battery management system (BMS) electronics for the 2019 car.
+The battery is 400V max and split into six series modules, each with a BMS board.
+
+To prototype, I made a stackup that connects 18 cells in series to a dev BMS board to
+simulate a single module:
+<img src="/img/fsae/bms-dev-1.jpg">
+<img src="/img/fsae/bms-dev-3.jpg">
+
+Here is the final version of the board with 4/6 modules installed:
+<img src="/img/fsae/bms-battery-small.jpg">
+
+The BMS board measures cell temperatures at 30 locations on each module using
+sensors on a carrier board that spans the whole top surface. This view shows
+the temperature sense electrical connections:
+
+<img src="/img/fsae/bms-temps.png">
+
+The BMS also uses capacitive sensors to detect if there is a liquid leak at the module's
+cooling connectors.
+
+<img src="/img/fsae/bms-leak.png">
+
+<h2>LV Power Distribution</h2>
+
+I designed the power distribution board for the car's electrical system to carry small
+modular electronic fuses. They measure 0.6"x1.5" and stand 3mm off the distribution board.
+They report power to a microcontroller and have software configurable current limits. The
+microcontroller is also on a daughter-board so the distribution board's PCB is mostly mechanical. 
+
+<img src="/img/fsae/lvb-3.jpg">
+
+The power distribution board routed about 800W of power to pumps, fans, motor controllers,
+and other electronics.
+
+<h2>HVLV Board</h2>
+
+Freshman year I made the "HVLV" board for our 2018 racecar. The board does some assorted things
+related to the high voltage system, like discharging HV capacitors and driving
+an indicator light when high voltage is active.
+
+<img src="/img/fsae/hvlv.jpg">
