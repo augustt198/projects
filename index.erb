@@ -20,7 +20,8 @@
 
         <div class="projects-list">
             <% DATA[:projects].each do |proj| %>
-                <a class="project" href="projects/<%= proj[:page] %>.html" style="background-image: url('<%= proj[:img] %>')">
+                <a class="project" href="projects/<%= proj[:page] %>.html"
+                  style="background-image: url('<%= compressed_img(proj[:img]) %>')">
                     <div class="project-header">
                         <h2><%= proj[:title] %>
                     </div>
