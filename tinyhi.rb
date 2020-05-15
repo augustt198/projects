@@ -1,11 +1,11 @@
 MATCHERS = {
+  "comment" => /\/\/.*(\r\n|\r|\n)?/,
   "str" => /\".*?\"/,
-  "op" => /(=|==|>=|<=|>|<|&&|\|\||&|\||!=|!)/,
+  "op" => /(=|==|>=|<=|>|<|&&|\|\||&|\||!=|!|<<|>>|\+|-|\/|\*)/,
   "kw" => /\b(int|float|double|char|void|long|bool|if|else|for|while|return)\b/,
   "float" => /\b(\d*\.\d+)\b/,
   "int" => /\b((?<!\.)(0x)?\d+(?!\.))\b/,
   "hex" => /\b0x[0-9a-fA-F]+\b/,
-  "comment" => /\/\/.*(\r\n|\r|\n)?/,
   "call" => /\b\w+(?=\()\b/,
 }
 
