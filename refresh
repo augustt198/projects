@@ -1,4 +1,16 @@
+#! /usr/local/bin/ruby -w
+
+ignore = %w{.html .jpg .png}
+
+lastupdate = nil
 while true
-  do ruby gen.rb
-  sleep 1
-done
+  update = Dir.glob("**/*").filter do |f|
+    !ignore.any? { |i| f.end_with? i }
+  end.map { |f| File.stat(f).atime }.reduce { |a,b| a > b ? a : b }
+  if !lastupdate || update > lastupdate
+    puts "updating"
+    lastupdate = update
+    puts `ruby gen.rb`
+  end
+  sleep(0.5)
+end
