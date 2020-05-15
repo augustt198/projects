@@ -111,7 +111,7 @@ The code to do this was pretty simple. I just needed a few arrays, one for each 
 of non-zero memory. This looked like this:
 </p>
 
-<pre class="code">
+<%= codeblock <<-CODE
 char data_addr_0_63[64] = {0xEB, 0xFE, 0x90, ...};
 
 char data_addr_480_543[64] = {0x00, 0x00, ..., 0x55, 0xAA, ...};
@@ -120,8 +120,9 @@ char data_addr_1024_1055[32] = {0x44, 0x41, 0x54, ...};
 
 char data_addr_17408_17439[32] = {0x31, 0x0A, 0x00, ...}
 
-char data_addr_17824_17919[96] = {0x00, 0x00, ... 0x3A, 0x9A, ...};
-</pre>
+char data_addr_17824_17919[96] = {0x00, 0x00, ..., 0x3A, 0x9A, ...};
+CODE
+%>
 
 <p>
 Then I had a function to return the proper byte for a given address. This
@@ -132,7 +133,8 @@ returned depending on the state of the microcontroller pin that's linked
 to the switch:
 </p>
 
-<pre class="code">
+
+<%= codeblock <<-CODE
 char getbyte(uint32_t idx) {
     if (idx == 17408) {
         if (PIND & 1) {
@@ -157,6 +159,7 @@ char getbyte(uint32_t idx) {
     } else {
         return 0; // zero everywhere else
     }
+    int x = "hello" != "3";
 }
-</pre>
+%>
 

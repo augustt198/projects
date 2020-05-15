@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'Aileron';
+    font-style: normal;
+    font-weight: normal;
+    src: url('aileron/Aileron-Regular.otf');
+}
 html, body {
     font-family: Inconsolata, monospace;
     margin: 0;
@@ -153,5 +159,29 @@ pre {
 
 pre.code {
     background-color: #eee;
+    padding: 5px 10px;
+}
+
+.syntax-int, .syntax-float, .syntax-hex { color: #1f24ef; }
+.syntax-comment { color: gray; }
+.syntax-kw { font-weight: bold; color: #610e52; }
+.syntax-op { color: #dc006e; }
+.syntax-str { color: green; }
+.syntax-call { color: #00318e; }
+
+/* why make an actual parser when HTML does it for you */
+.syntax-comment span {
+    color: inherit !important;
+    font-weight: inherit !important;
+}
+.syntax-str span {
+    color: inherit !important;
+    font-weight: inherit !important;
+}
+
+div.code {
+    font-family: monospace;
+    background-color: #eee;
+    white-space: pre;
     padding: 5px 10px;
 }

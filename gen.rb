@@ -1,5 +1,6 @@
 require 'erb'
 require_relative 'data.rb'
+require_relative 'tinyhi.rb'
 
 LAST_COMMIT_SHA = (`git rev-parse --short HEAD`).strip
 COMMIT_URL = "https://github.com/augustt198/projects/commit/#{LAST_COMMIT_SHA}"
@@ -12,6 +13,15 @@ end
 def compressed_img(link)
     name = link[0, link.rindex(".")]
     return "#{name}-compressed.jpg"
+end
+
+def codeblock_plain(str)
+    "<div class=\"code\">#{str}</div>"
+end
+
+def codeblock(str)
+    res = hilite(str)
+    return codeblock_plain(res)
 end
 
 # generate
