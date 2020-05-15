@@ -1,9 +1,3 @@
-@font-face {
-    font-family: 'Aileron';
-    font-style: normal;
-    font-weight: normal;
-    src: url('aileron/Aileron-Regular.otf');
-}
 html, body {
     font-family: Inconsolata, monospace;
     margin: 0;
